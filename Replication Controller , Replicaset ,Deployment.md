@@ -12,8 +12,10 @@ While you can use ReplicaSets independently, they are commonly managed by **Depl
 
 - **Rolling Updates**: Seamlessly update pods to a new version of the application.
 - **Rollbacks**: Easily revert to a previous state if something goes wrong.
-- **Declarative Management**: Simplifies pod lifecycle management.
+- **Declarative Management**: Simplifies pod lifecycle management. 
 
+To check pod is part of ReplicaSet or not - `kubectl describe pod <pod_name>`
+check OwnerReferences - to get info of pod
 
 | Feature                    | ReplicationController (RC)                                | ReplicaSet (RS)                                                                              |
 | -------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |

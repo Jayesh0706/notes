@@ -22,7 +22,7 @@
 
 #### **a. ClusterIP (Default)**-
 
-- Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster.
+- Exposes the Service on a ==cluster-internal IP==. Choosing this value makes the Service only reachable from within the cluster.
 - **What it does:**
     - Exposes the Service internally within the Kubernetes cluster.
     - Only accessible from within the cluster (e.g., by other pods).
@@ -35,7 +35,7 @@
 
 
 #### **b. NodePort -**(Not safe cause we expose the port)
-- Exposes the Service on each Node's IP at a static port (the `NodePort`). To make the node port available
+- Exposes the Service on each Node's IP at a ==static port== (the `NodePort`). To make the node port available(It is very risky, ==companies don't use node port== )
 
 - **What it does:**
     - Exposes the Service externally on a static port (between 30000–32767) on each node in the cluster.

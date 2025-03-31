@@ -1,0 +1,188 @@
+{
+  "main": {
+    "id": "e31131d1b72f52a5",
+    "type": "split",
+    "children": [
+      {
+        "id": "6b0c8150305c3197",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9a44d94dd492f713",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Affinity and Anti-Affinity.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Affinity and Anti-Affinity"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "08e967d2dd7e18ce",
+    "type": "split",
+    "children": [
+      {
+        "id": "c244d64c78514819",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "29d0e91c284517da",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "2a01a66ccf422ada",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "094b9ab3e422d482",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "1567f9ceef44c5cc",
+    "type": "split",
+    "children": [
+      {
+        "id": "835462d25b59159a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "015856505f533dfe",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Replication Controller , Replicaset ,Deployment.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Replication Controller , Replicaset ,Deployment"
+            }
+          },
+          {
+            "id": "222a6a4415c34885",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Replication Controller , Replicaset ,Deployment.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Replication Controller , Replicaset ,Deployment"
+            }
+          },
+          {
+            "id": "085e58f8f34de42e",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "1322cd739f29764d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Replication Controller , Replicaset ,Deployment.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Replication Controller , Replicaset ,Deployment"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "9a44d94dd492f713",
+  "lastOpenFiles": [
+    "Kubernetes Labels.md",
+    "Kubernetes Namespaces.md",
+    "Kubernetes Request and Limit with QOS.md",
+    "Kubernetes Resource Quotas & Limit ranges.md",
+    "Kubernetes Volumes.md",
+    "Objects In Kubernetes.md",
+    "Probes in Kubernetes.md",
+    "Service mesh in Kubernetes.md",
+    "Replication Controller , Replicaset ,Deployment.md",
+    "Affinity and Anti-Affinity.md",
+    "Services in Kubernetes.md",
+    "Kubernetes.md",
+    "Ansible.md"
+  ]
+}
