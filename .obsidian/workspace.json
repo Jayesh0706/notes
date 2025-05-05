@@ -1,41 +1,70 @@
 {
   "main": {
-    "id": "e31131d1b72f52a5",
+    "id": "f94ce888eef582f3",
     "type": "split",
     "children": [
       {
-        "id": "6b0c8150305c3197",
+        "id": "d91579afd54a34cf",
         "type": "tabs",
         "children": [
           {
-            "id": "9a44d94dd492f713",
+            "id": "68ce61bcc9f2b2e3",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Affinity and Anti-Affinity.md",
+                "file": "Services in Kubernetes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Affinity and Anti-Affinity"
+              "title": "Services in Kubernetes"
+            }
+          },
+          {
+            "id": "7dcdb4452849743f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Docker Commands.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Docker Commands"
+            }
+          },
+          {
+            "id": "926d9494a92877fe",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Docker Networking.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Docker Networking"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
   },
   "left": {
-    "id": "08e967d2dd7e18ce",
+    "id": "10d851998f7b5a6e",
     "type": "split",
     "children": [
       {
-        "id": "c244d64c78514819",
+        "id": "daa100a0969cc54a",
         "type": "tabs",
         "children": [
           {
-            "id": "29d0e91c284517da",
+            "id": "6eebbe4c98cf831b",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -48,7 +77,7 @@
             }
           },
           {
-            "id": "2a01a66ccf422ada",
+            "id": "d14a3c34d35eb658",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -65,7 +94,7 @@
             }
           },
           {
-            "id": "094b9ab3e422d482",
+            "id": "facab6f344d7492f",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -78,24 +107,24 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
+    "width": 200,
     "collapsed": true
   },
   "right": {
-    "id": "1567f9ceef44c5cc",
+    "id": "3c18038cac2068f9",
     "type": "split",
     "children": [
       {
-        "id": "835462d25b59159a",
+        "id": "a1e96a45fb8b5e1c",
         "type": "tabs",
         "children": [
           {
-            "id": "015856505f533dfe",
+            "id": "e39216dfd5b01140",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Replication Controller , Replicaset ,Deployment.md",
+                "file": "Docker Commands.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -105,58 +134,54 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Replication Controller , Replicaset ,Deployment"
+              "title": "Backlinks for Docker Commands"
             }
           },
           {
-            "id": "222a6a4415c34885",
+            "id": "c7f926c61bab21dc",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Replication Controller , Replicaset ,Deployment.md",
+                "file": "Docker Commands.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Replication Controller , Replicaset ,Deployment"
+              "title": "Outgoing links from Docker Commands"
             }
           },
           {
-            "id": "085e58f8f34de42e",
+            "id": "f2e25bbba748356c",
             "type": "leaf",
             "state": {
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true,
-                "showSearch": false,
-                "searchQuery": ""
+                "useHierarchy": true
               },
               "icon": "lucide-tags",
               "title": "Tags"
             }
           },
           {
-            "id": "1322cd739f29764d",
+            "id": "35eb40059a6f90dc",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "Replication Controller , Replicaset ,Deployment.md",
-                "followCursor": false,
-                "showSearch": false,
-                "searchQuery": ""
+                "file": "Docker Commands.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of Replication Controller , Replicaset ,Deployment"
+              "title": "Outline of Docker Commands"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300,
+    "width": 200,
     "collapsed": true
   },
   "left-ribbon": {
@@ -169,20 +194,46 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "9a44d94dd492f713",
+  "active": "926d9494a92877fe",
   "lastOpenFiles": [
-    "Kubernetes Labels.md",
-    "Kubernetes Namespaces.md",
-    "Kubernetes Request and Limit with QOS.md",
-    "Kubernetes Resource Quotas & Limit ranges.md",
-    "Kubernetes Volumes.md",
-    "Objects In Kubernetes.md",
-    "Probes in Kubernetes.md",
-    "Service mesh in Kubernetes.md",
-    "Replication Controller , Replicaset ,Deployment.md",
-    "Affinity and Anti-Affinity.md",
+    "Docker Networking.md",
+    "Docker Commands.md",
+    "Docker.md",
     "Services in Kubernetes.md",
+    "Gujarat and Majboori.md",
+    "Taints, Tolerations and Node Selector in Kubernetes.md",
+    "Affinity and Anti-Affinity.md",
     "Kubernetes.md",
-    "Ansible.md"
+    "Replication Controller , Replicaset ,Deployment.md",
+    "Objects In Kubernetes.md",
+    "Kubernetes Request and Limit with QOS.md",
+    "selector.md",
+    "Authorization in kubernetes.md",
+    "Kubernetes Resource Quotas & Limit ranges.md",
+    "K8s and Docker Security Tools.md",
+    "ConfigMaps and Secrets in Kubernetes.md",
+    "Kubernetes Volumes.md",
+    "Ingress and Ingress Controller.md",
+    "Ansible.md",
+    "Kubernetes Namespaces.md",
+    "QOS (Quality Of Service) in kubernetes.md",
+    "Pasted image 20241226114019.png",
+    "Pasted image 20241224205903.png",
+    "Pasted image 20241224205724.png",
+    "Pasted image 20241224205443.png",
+    "Pasted image 20241221191321.png",
+    "Probes in Kubernetes.md",
+    "K8S commands.md",
+    "Kubernetes Labels.md",
+    "Service mesh in Kubernetes.md",
+    "sidecar.md",
+    "Untitled 2.canvas",
+    "Pasted image 20241214214217.png",
+    "Pasted image 20241214211654.png",
+    "Pasted image 20241213203857.png",
+    "Pasted image 20241115164231.png",
+    "Pasted image 20241115163630.png",
+    "Untitled 1.canvas",
+    "Untitled.canvas"
   ]
 }
