@@ -196,6 +196,7 @@
   },
   "active": "926d9494a92877fe",
   "lastOpenFiles": [
+    "Maven.md",
     "Docker Networking.md",
     "Docker Commands.md",
     "Docker.md",
@@ -226,7 +227,6 @@
     "K8S commands.md",
     "Kubernetes Labels.md",
     "Service mesh in Kubernetes.md",
-    "sidecar.md",
     "Untitled 2.canvas",
     "Pasted image 20241214214217.png",
     "Pasted image 20241214211654.png",
