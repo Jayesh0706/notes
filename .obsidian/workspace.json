@@ -62,6 +62,18 @@
               "icon": "lucide-file",
               "title": "Docker Interview Questions"
             }
+          },
+          {
+            "id": "9e0d84bedcf36426",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.8.10"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.8.10"
+            }
           }
         ],
         "currentTab": 3
@@ -96,7 +108,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:#imp",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -117,12 +129,12 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "3c18038cac2068f9",
@@ -208,7 +220,7 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "fd5fd49f43bef01b",
+  "active": "d14a3c34d35eb658",
   "lastOpenFiles": [
     "Docker Interview Questions.md",
     "Docker Networking.md",
