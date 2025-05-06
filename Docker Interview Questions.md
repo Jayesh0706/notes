@@ -5,11 +5,10 @@ The content will include separate sections for Docker and Kubernetes, covering b
 # Docker and Kubernetes DevOps Interview Preparation Guide (1 Year Experience)
 
 ## Docker
-
 ### Interview Questions (Basic to Intermediate)
 
 **Q1.** _What is Docker and how is it different from a virtual machine?_  
-**A1.** Docker is an open-source containerization platform that packages applications into **containers** – standardized units containing your code and its dependencies. This ensures the app runs the same regardless of environment. Unlike a full **virtual machine** that emulates hardware and includes a full guest OS, Docker containers share the host OS kernel and isolate the application at the process level. This makes containers much lighter-weight, faster to start, and more resource-efficient than VMs. (In essence, VMs virtualize an entire machine, while Docker provides isolated user-space instances on the host OS.)
+**A1.** Docker is an open-source containerization platform that packages applications into **containers** – standardized units containing your code and its dependencies. This ensures the app runs the same  of environment. Unlike a full **virtual machine** that emulates hardware and includes a full guest OS, Docker containers share the host OS kernel and isolate the application at the process level. This makes containers much lighter-weight, faster to start, and more resource-efficient than VMs. (In essence, VMs virtualize an entire machine, while Docker provides isolated user-space instances on the host OS.)
 
 **Q2.** _What is a Docker image and how is it different from a container?_  
 **A2.** A **Docker image** is a lightweight, standalone package that includes everything needed to run an application: the code, runtime, system tools, libraries, etc.. An image is essentially a **template** for creating containers – it’s a read-only snapshot built from a series of layers (each layer usually comes from a Dockerfile instruction). A **container** is a running instance of an image. When you start a container from an image, Docker adds a writable layer on top of the image layers; the container is the actual process (or set of processes) executing the application inside this isolated environment. You can have multiple containers (instances) all created from the same image, each with its own isolated runtime.
@@ -609,11 +608,11 @@ So to summarize types in an interviewer-friendly way:
 A typical usage: you ==deploy your app with a Deployment (creating pods) and then create a Service (ClusterIP) to group those pods==. ==Other pods in the cluster can now reach the app via Service name (thanks to DNS) and the Service will distribute traffic to one of the app pods.== If you need this app accessible outside the cluster, you might use a LoadBalancer service or an Ingress resource (with the Service still as ClusterIP behind it). #imp
 
 **Q9.** _How do ConfigMaps and Secrets work in Kubernetes? What’s the difference between them and how would you use them with pods?_  
-**A9.** **ConfigMaps** and **Secrets** are both ways to inject configuration data into Kubernetes pods, decoupling configuration from container images. The main difference is that **Secrets are intended for confidential data**, whereas ConfigMaps are for plain configuration (not sensitive).
+**A9.** ==**ConfigMaps** and **Secrets** are both ways to inject configuration data into Kubernetes pods, decoupling configuration from container images==. The main difference is that **Secrets are intended for confidential data**, whereas ConfigMaps are for plain configuration (not sensitive).
 
-- **ConfigMap:** Stores non-confidential key-value pairs (strings). It might contain things like config file snippets, environment variables, URLs, etc. A ConfigMap can be created from literal values, from a file, or defined directly in YAML. ConfigMaps do **not** provide encryption or secrecy – they are stored in etcd in plaintext. Use cases: configuring application settings (e.g., external service URLs, feature flags, etc.) which can differ between environments. Pods can consume ConfigMaps in two primary ways:
+- ==**ConfigMap:** Stores non-confidential key-value pairs (strings)==. It might contain things like config file snippets, environment variables, URLs, etc. A ConfigMap can be created from literal values, from a file, or defined directly in YAML. ConfigMaps do **not** provide encryption or secrecy – they are stored in etcd in plaintext. Use cases: configuring application settings (e.g., external service URLs, feature flags, etc.) which can differ between environments. Pods can consume ConfigMaps in two primary ways:
     
-    - **Environment variables:** You can reference a ConfigMap’s values to populate env vars in a container. In the pod spec, you’d do something like:
+    - **Environment variables:** ==You can reference a ConfigMap’s values to populate env vars in a container.== In the pod spec, you’d do something like:
         
         ```yaml
         env:
@@ -624,12 +623,12 @@ A typical usage: you ==deploy your app with a Deployment (creating pods) and the
               key: log_level       # the key in the ConfigMap
         ```
         
-    - **Mounted files:** You can mount a ConfigMap as a volume. Each key becomes a file in the volume, with the content being the value. For example, if you have a ConfigMap with key “app.properties” and some config text as value, you can mount it so that `/config/app.properties` appears in the container filesystem with that content. Apps can then read that file.
+    - **Mounted files:** ==You can mount a ConfigMap as a volume==. Each key becomes a file in the volume, with the content being the value. For example, if you have a ConfigMap with key “app.properties” and some config text as value, you can mount it so that `/config/app.properties` appears in the container filesystem with that content. Apps can then read that file.
         
     
-    ConfigMaps are great for things like providing configuration without baking it into images (so the same image can be used in dev/prod with different settings). Note: If a ConfigMap is updated, pods don’t automatically see the change unless they are programmed to (configMap volumes do update eventually, but env vars won’t update in a running pod).
+    ConfigMaps are great for things like providing configuration without baking it into images (so the same image can be used in dev/prod with different settings). Note: ==If a ConfigMap is updated, pods don’t automatically see the change unless they are programmed to ==(configMap volumes do update eventually, but env vars won’t update in a running pod).
     
-- **Secret:** Similar to ConfigMap in usage (can be used as env vars or mounted as files), but meant for sensitive data like passwords, API keys, tokens, certificates. The data in a Secret is base64-encoded in the resource (which is just an encoding, not encryption – though etcd can be configured to encrypt secrets at rest). By default, Kubernetes will hide the secret’s values when you do `kubectl get secret` (you’ll see `<redacted>` or base64). Access to Secret objects can be restricted by RBAC. Also, when Secrets are mounted into pods, the data is mounted into memory (tmpfs) so it’s not written to node disk.
+- **Secret:** Similar to ConfigMap in usage (can be used as env vars or mounted as files), but meant for sensitive data like passwords, API keys, tokens, certificates. ==The data in a Secret is base64-encoded in the resource== (which is just an encoding, not encryption – though etcd can be configured to encrypt secrets at rest). By default, Kubernetes will hide the secret’s values when you do `kubectl get secret` (you’ll see `<redacted>` or base64). Access to Secret objects can be restricted by RBAC. Also, when Secrets are mounted into pods, the data is mounted into memory (tmpfs) so it’s not written to node disk.
     
     You create a Secret similarly, either from literal values or from files (often for things like TLS certs). There are also specific secret types like `kubernetes.io/dockerconfigjson` for image pull secrets, etc. But for an app secret, you might do:
     
@@ -653,18 +652,18 @@ A typical usage: you ==deploy your app with a Deployment (creating pods) and the
 
 **Differences:** In addition to the confidentiality aspect, another difference is size limits and usage intended. ConfigMaps can be larger (1MB limit), whereas Secrets are also similar in size (also 1MiB), but you generally keep secrets small. Also, pulling secrets requires the kubelet to have the rights to them; if a pod references a secret, the system ensures that secret is delivered to the node (kubelet) securely. For configmaps, it’s not as sensitive.
 
-**Usage together:** Often, you might use a ConfigMap for non-sensitive configs (like app mode, or URLs) and a Secret for things like credentials. For example, you have a database Pod: you’d give it a ConfigMap with DB_HOST, DB_NAME, etc. and a Secret with DB_USER and DB_PASSWORD. In your Deployment spec for the DB client, you’d map those into env vars. This way, if the password rotates, you just update the Secret (and maybe restart pods or they pick up new on next start).
+**Usage together:** Often, you might use a ==ConfigMap for non-sensitive configs (like app mode, or URLs) and a Secret for things like credentials==. For example, you have a database Pod: you’d give it a ConfigMap with DB_HOST, DB_NAME, etc. and a Secret with DB_USER and DB_PASSWORD. In your Deployment spec for the DB client, you’d map those into env vars. This way, if the password rotates, you just update the Secret (and maybe restart pods or they pick up new on next start).
 
 So, ConfigMap = **plain config** (not encrypted, just a convenience object), Secret = **sensitive config** (with some minor protection and intended for things you wouldn’t put in a ConfigMap). Both help avoid hardcoding values in Pod specs or images, enabling separation of config from code.
 
 **Q10.** _What is a Namespace in Kubernetes and how is it used?_  
-**A10.** A **Namespace** is a way to divide a Kubernetes cluster into multiple virtual clusters. In Kubernetes, _namespaces provide a mechanism to isolate groups of resources within a single cluster_. They are like separate environments. Resources in different namespaces are logically separate – for instance, you can have a Deployment named “web” in namespace A and another Deployment named “web” in namespace B, and they won’t conflict because their full names are different (web.A vs web.B effectively).
+**A10.** A ==**Namespace** is a way to divide a Kubernetes cluster into multiple virtual clusters==. In Kubernetes, ==_namespaces provide a mechanism to isolate groups of resources within a single cluster_.== They are like separate environments. Resources in different namespaces are logically separate – for instance, you can have a Deployment named “web” in namespace A and another Deployment named “web” in namespace B, and they won’t conflict because their full names are different (web.A vs web.B effectively).
 
 Key points about namespaces:
 
-- Namespaces are intended for multi-team or multi-project environments where you want to segregate resources. For small clusters or single-team setups, often everything is just in the “default” namespace.
+- ==Namespaces are intended for multi-team or multi-project environments== where you want to segregate resources. For small clusters or single-team setups, often everything is just in the “default” namespace.
     
-- Certain resources are **namespaced** (like Pods, Services, Deployments, etc.), meaning they exist within a namespace. Other resources are cluster-wide (not namespaced), like Nodes, PersistentVolumes, or cluster roles.
+- ==Certain resources are **namespaced** (like Pods, Services, Deployments, etc.), meaning they exist within a namespace. Other resources are cluster-wide (not namespaced), like Nodes, PersistentVolumes, or cluster roles.== #imp
     
 - Namespaces can be used to apply resource quotas (you can limit how much CPU/Memory a namespace can use, or how many objects it can have) and to set up network policies that restrict communication, etc. It’s a security and organization boundary.
     
@@ -672,7 +671,7 @@ Key points about namespaces:
     
 - Kubernetes does not isolate namespaces at the network level by default (all pods can talk to all pods, regardless of namespace, unless restricted by NetworkPolicies). The isolation is more about naming and resource management.
     
-- In a company, you might give each team its own namespace. They can manage their resources without stepping on another team’s resource names. You can also tie RBAC roles to namespaces, e.g., Team A’s service account can only CRUD in namespace A, not in others.
+- In a company, you might give each team its own namespace. They can manage their resources without stepping on another team’s resource names. ==You can also tie RBAC roles to namespaces,== e.g., Team A’s service account can only CRUD in namespace A, not in others.
     
 
 Think of it like this: If you have multiple environments (dev, staging, prod) on one cluster, you might implement those as separate namespaces to isolate them. Or if multiple applications share a cluster, separate them by namespace. Names within a namespace must be unique, but not across the whole cluster.
@@ -684,9 +683,9 @@ To use a namespace, you can specify it in YAML metadata or via `kubectl -n`. Als
 **Q11.** _How do you scale an application in Kubernetes?_  
 **A11.** Scaling in Kubernetes can be done **manually** or **automatically**:
 
-- **Manual scaling:** You adjust the number of replicas of a Deployment (or ReplicaSet). For example, if you have a Deployment running 3 replicas of your app and you want to handle more load, you might scale it to 10 replicas. You can do this via `kubectl scale deployment myapp --replicas=10` or by editing the deployment YAML (either via `kubectl edit` or updating your config and doing `apply`). The Deployment controller will then create the additional Pods (via its ReplicaSet) and schedule them on nodes. Conversely, scaling down removes Pods. This is a pretty quick process – if resources are available, new pods come up within seconds (plus whatever time to pull images if needed and start containers).
+- **Manual scaling:** You adjust the number of replicas of a Deployment (or ReplicaSet). For example, if you have a Deployment running 3 replicas of your app and you want to handle more load, you might scale it to 10 replicas. ==You can do this via `kubectl scale deployment myapp --replicas=10` or by editing the deployment YAML== (either via `kubectl edit` or updating your config and doing `apply`). The Deployment controller will then create the additional Pods (via its ReplicaSet) and schedule them on nodes. Conversely, scaling down removes Pods. This is a pretty quick process – if resources are available, new pods come up within seconds (plus whatever time to pull images if needed and start containers).
     
-- **Horizontal Pod Autoscaler (HPA):** Kubernetes can scale your application automatically based on metrics (like CPU utilization or custom metrics). You set up an HPA object that targets a Deployment (or ReplicaSet/StatefulSet) and defines min/max replica count and a target metric (say, keep average CPU at 50%). The Kubernetes Metrics Server (or Prometheus adapter for custom metrics) will feed metrics to the HPA, and the HPA will increase or decrease the replica count accordingly. For example, if CPU usage goes high, HPA might scale out from 3 pods to 6 pods. HPA is horizontal scaling (more pods). There’s also Vertical Pod Autoscaling (adjusts resource requests of pods, not as commonly used in all setups).
+- **Horizontal Pod Autoscaler (HPA):** ==Kubernetes can scale your application automatically based on metrics (like CPU utilization or custom metrics)==. You set up an HPA object that targets a Deployment (or ReplicaSet/StatefulSet) and defines min/max replica count and a target metric (say, keep average CPU at 50%). The ==Kubernetes Metrics Server (or Prometheus adapter for custom metrics) will feed metrics to the HPA, and the HPA will increase or decrease the replica count accordingly. ==For example, if CPU usage goes high, HPA might scale out from 3 pods to 6 pods. HPA is horizontal scaling (more pods). There’s also Vertical Pod Autoscaling (adjusts resource requests of pods, not as commonly used in all setups).
     
 
 To scale _stateful_ applications (e.g., StatefulSets), the concept is similar, but you might have considerations (like ordering or unique identities). Deployments (stateless) are easiest to scale.
@@ -697,9 +696,8 @@ So practically: Let’s say your web Deployment is currently at 2 replicas and y
 kubectl scale deploy/web --replicas=5
 ```
 
-This will issue an update to the deployment’s spec. You can verify with `kubectl get pods` – you’ll see new pods being created (with new names) until there are 5. The service (if any) that fronts these pods automatically starts sending traffic to the new pods as they become Ready.
 
-If using an HPA, you would have set that up (e.g., `kubectl autoscale deploy/web --min=2 --max=10 --cpu-percent=50`). Then you typically wouldn’t manually scale; the HPA controller would adjust replicas up/down between 2 and 10 based on metrics.
+==If using an HPA, you would have set that up (e.g., `kubectl autoscale deploy/web --min=2 --max=10 --cpu-percent=50`). Then you typically wouldn’t manually scale; the HPA controller would adjust replicas up/down between 2 and 10 based on metrics==.
 
 Another angle is scaling at the cluster level (adding more nodes to handle more pods), but I suspect the question is about application scaling (pods).
 
@@ -717,9 +715,9 @@ Another angle is scaling at the cluster level (adding more nodes to handle more 
 
 When to use StatefulSet: any scenario where you have stateful applications requiring stable identity or ordering. Examples: databases (MySQL cluster, MongoDB replica sets), distributed consensus systems (etcd, Zookeeper), Kafka and other message brokers, or any service where each node has data that should persist and perhaps a fixed identity (like node indices). If an application expects to be “node 1” in a cluster and keep that identity, StatefulSet is appropriate.
 
-By contrast, a **Deployment** is ideal for stateless, replicated workloads (web servers, stateless microservices) where any pod can service any request and pods are interchangeable. Deployments do rolling updates nicely, but they don’t guarantee ordering or stable identity.
+By contrast, a ==**Deployment** is ideal for stateless, replicated workloads (web servers, stateless microservices) where any pod can service any request and pods are interchangeable. Deployments do rolling updates nicely, but they don’t guarantee ordering or stable identity.==
 
-To highlight difference: **Deployments** don’t guarantee the same pod will get the same volume or IP each time – if you scale down and up, you might get new pod names. **StatefulSets** provide guarantees about pod ordering and uniqueness. Each StatefulSet pod keeps a constant name and usually gets a persistent volume attached that remains even if the pod is rescheduled. Use StatefulSet when your app needs these guarantees (for example, a legacy system that registers node names, or a cluster that elects a leader by node name).
+To highlight difference: ==**Deployments** don’t guarantee the same pod will get the same volume or IP each time – if you scale down and up, you might get new pod names. **StatefulSets** provide guarantees about pod ordering and uniqueness. Each StatefulSet pod keeps a constant name and usually gets a persistent volume attached that remains even if the pod is rescheduled. Use StatefulSet when your app needs these guarantees (for example, a legacy system that registers node names, or a cluster that elects a leader by node name).== #veryImp 
 
 If asked about how Kubernetes achieves stable network ID: when you create a Headless Service for the StatefulSet, each pod gets a DNS entry `<podname>.<service name>.<namespace>.svc.cluster.local` pointing directly to its IP. For storage, the PVCs created by the StatefulSet have the pod index in their name.
 
@@ -751,18 +749,18 @@ Key details:
 So you’d use a DaemonSet whenever you have a piece of infrastructure that should always be present on every node for proper operation or management of the cluster. A concrete example: “We need a filebeat log shipper on all nodes to send logs to Elasticsearch” – implement that as a DaemonSet of filebeat pods. Without DaemonSet, you’d have to manually run one pod per node or something brittle.
 
 **Q14.** _What are liveness and readiness probes in Kubernetes? Why are they important and how do they work?_  
-**A14.** **Liveness and Readiness Probes** are Kubernetes mechanisms to monitor the health of containers in a pod and take action based on that health.
+**A14.** ==**Liveness and Readiness Probes** are Kubernetes mechanisms to monitor the health of containers in a pod and take action based on that health.==
 
-- **Liveness Probe:** Answers the question “Is my container _still alive_ (healthy) or has it hung/failed in a way that it cannot recover?” If a liveness probe fails, Kubernetes will restart the container (kill it, and depending on restart policy, the kubelet will create a new instance). This helps auto-recover from certain application failures (like deadlocks, or if the process is stuck). For example, a liveness probe could be an HTTP GET on `/health` endpoint of your app, or an exec of a command like `pgrep someProcess` or even a simple `true/false` check. If your app fails this check (say it doesn’t respond or returns an unhealthy status), Kubernetes assumes the container is bad and will kill+restart it.
+- **Liveness Probe:** Answers the question “Is my container _still alive_ (healthy) or has it hung/failed in a way that it cannot recover?”==If a liveness probe fails, Kubernetes will restart the container== #imp(kill it, and depending on restart policy, the kubelet will create a new instance). This helps auto-recover from certain application failures (like deadlocks, or if the process is stuck). For example, a liveness probe could be an HTTP GET on `/health` endpoint of your app, or an exec of a command like `pgrep someProcess` or even a simple `true/false` check. If your app fails this check (say it doesn’t respond or returns an unhealthy status), Kubernetes assumes the container is bad and will kill+restart it.
     
-- **Readiness Probe:** Answers “Is my container _ready_ to serve requests?” Readiness probes determine if the Pod should receive traffic. If a readiness probe fails, Kubernetes will remove the Pod’s IP from the endpoints of the Service, meaning no traffic is sent to it until it passes again. The container is not killed when readiness fails (unlike liveness). This is useful for cases where an application may be alive but not ready to serve (e.g., still initializing, or temporarily overloaded). Readiness probe could check that the app can accept traffic – maybe the same endpoint as liveness or a more application-specific check (like can it connect to its DB, or has it loaded necessary data).
+- **Readiness Probe:** Answers ==“Is my container _ready_ to serve requests?” Readiness probes determine if the Pod should receive traffic. If a readiness probe fails, Kubernetes will remove the Pod’s IP from the endpoints of the Service, meaning no traffic is sent to it until it passes again.== #imp The container is not killed when readiness fails (unlike liveness). This is useful for cases where an application may be alive but not ready to serve (e.g., still initializing, or temporarily overloaded). Readiness probe could check that the app can accept traffic – maybe the same endpoint as liveness or a more application-specific check (like can it connect to its DB, or has it loaded necessary data).
     
 
 Why they are important:
 
 - They enable **self-healing**: liveness probes can automatically remedy certain failure modes by restarting the container. Without it, a hung process would just sit there forever.
     
-- They ensure **correct traffic routing**: readiness probes prevent sending requests to pods that aren’t actually ready to handle them. For example, during startup, your app might take 30 seconds to load data – readiness stays false, so the Service won’t send traffic yet (important during rolling updates to not send traffic to new pods until they’re ready).
+- They ensure **correct traffic routing**: readiness probes prevent sending requests to pods that aren’t actually ready to handle them. ==For example, during startup, your app might take 30 seconds to load data – readiness stays false, so the Service won’t send traffic yet (important during rolling updates to not send traffic to new pods until they’re ready).==
     
 - They also can coordinate with deployment rolling updates: A Deployment will wait for new pods to be ready (readiness probe success) before considering an update complete (and depending on strategy, it might not scale down old ones until new are ready).
     
@@ -772,10 +770,11 @@ How they work:
 - In the Pod spec, under `containers`, you can define `livenessProbe` and `readinessProbe` (and there’s also `startupProbe` for a special case). You specify a probe type: HTTP GET (to a specified path and port), TCP socket check, or Exec (run a command in the container). You also specify things like initialDelaySeconds (time after container start to begin probing, so your app has time to start), interval, timeout, successThreshold, failureThreshold.
     
 - The kubelet on each node is responsible for actually performing these probes on the schedule.
-    
-    - If a liveness probe fails `failureThreshold` times in a row, kubelet will consider the container unhealthy and kill it (the restart policy on the Pod governs what happens next – usually it’s Always restart, so it will be restarted).
+
+     #veryImp    
+    - ==If a liveness probe fails `failureThreshold` times in a row, kubelet will consider the container unhealthy and kill it (the restart policy on the Pod governs what happens next – usually it’s Always restart, so it will be restarted).==
         
-    - If a readiness probe fails, the kubelet marks the pod as not ready (this affects Endpoints for Services: the pod’s IP is removed). When the readiness probe starts succeeding again, the pod is marked ready and traffic can flow to it.
+    - ==If a readiness probe fails, the kubelet marks the pod as not ready (this affects Endpoints for Services: the pod’s IP is removed). When the readiness probe starts succeeding again, the pod is marked ready and traffic can flow to it.==
         
 - Example:
     
@@ -815,7 +814,7 @@ In sum, **liveness = when to restart** a container, **readiness = when to send t
     - Applying a new config (`kubectl apply -f deployment.yaml`) with the updated image or other changes.
         
     
-    Kubernetes Deployments by default use a rolling update strategy. This means it will create a new ReplicaSet for the new version and gradually shift pods from the old ReplicaSet to the new one:
+    ==Kubernetes Deployments by default use a rolling update strategy. This means it will create a new ReplicaSet for the new version and gradually shift pods from the old ReplicaSet to the new one==:
     
     - It will bring up a few new pods (controlled by `spec.strategy.rollingUpdate.maxSurge`, default 25% of replicas can be above desired during update).
         
@@ -826,16 +825,16 @@ In sum, **liveness = when to restart** a container, **readiness = when to send t
     - You can monitor this with `kubectl rollout status deployment/myapp` which will tell you when the rollout is complete or if it’s stuck.
         
     
-    So basically, to perform a rolling update, you just declare the new state (new image or config) and Kubernetes handles the transition. If your Deployment has, say, 4 replicas, by default it might spin up one new pod (5 total, 1 surge) then kill one old (back to 4), then another new, etc., maintaining service availability.
+    ==So basically, to perform a rolling update, you just declare the new state (new image or config) and Kubernetes handles the transition. If your Deployment has, say, 4 replicas, by default it might spin up one new pod (5 total, 1 surge) then kill one old (back to 4), then another new, etc., maintaining service availability.==
     
-- **Rollback:** If the new version has an issue, Kubernetes Deployments allow easy rollback:
+- **Rollback:** ==If the new version has an issue, Kubernetes Deployments allow easy rollback==:
     
-    - You can run `kubectl rollout undo deployment/myapp` to rollback to the previous revision. Deployment keeps the last few revisions (revision history).
+    - You can run ==`kubectl rollout undo deployment/myapp`== to rollback to the previous revision. Deployment keeps the last few revisions (revision history).
         
-    - You can also rollback to a specific revision if you have multiple (using `--to-revision=n`).
+    - ==You can also rollback to a specific revision if you have multiple (using `--to-revision=n`)==. #veryImp 
         
     
-    When you rollback, Kubernetes will basically do another rolling update but this time to the old ReplicaSet (scaling it up and scaling down the bad new one). The Deployment’s history is updated (the rollback itself counts as a new revision).
+    ==When you rollback, Kubernetes will basically do another rolling update but this time to the old ReplicaSet== (scaling it up and scaling down the bad new one). The Deployment’s history is updated (the rollback itself counts as a new revision).
     
     For example, if you noticed your Deployment is unhealthy after an update (perhaps pods are CrashLooping), you could quickly execute the rollback. The system will then start spinning up pods of the old version and terminate the new ones, again in a rolling fashion (to minimize downtime).
     
@@ -851,7 +850,8 @@ A few additional notes:
 
 For StatefulSets, rolling updates are a bit different (ordered, often one by one), and rollback is typically manual (as of Kubernetes now, you might have to deploy old version again, since StatefulSets don’t have revision history like Deployments).
 
-In summary: to do a rolling update, **update the Deployment’s pod spec** (typically the image tag). Kubernetes will rollout in increments (new pods and killing old pods gradually). To rollback, use **`kubectl rollout undo`** which will revert to the last working spec (previous revision). This mechanism helps achieve zero-downtime updates and quick recovery if the new deployment is bad.
+#veryImp 
+In summary: ==to do a rolling update, **update the Deployment’s pod spec** (typically the image tag). Kubernetes will rollout in increments (new pods and killing old pods gradually)==. ==To rollback, use **`kubectl rollout undo`** which will revert to the last working spec (previous revision). This mechanism helps achieve zero-downtime updates and quick recovery if the new deployment is bad.==
 
 **Q16.** _Kubernetes stores cluster state in etcd. What is etcd and what role does it play in Kubernetes?_  
 **A16.** **etcd** is a distributed, consistent key-value store used as Kubernetes’ backing store for all cluster data. It’s often described as the “brain” of Kubernetes – every configuration, state detail, and metadata about the cluster is stored in etcd (API objects like Deployments, Pod definitions, Service configurations, secrets, etc., as well as status info).
@@ -883,9 +883,9 @@ So etcd is a **consistent key-value database** that Kubernetes uses to store eve
 
 - **Kubernetes Cluster and Nodes:** A Kubernetes cluster consists of a set of worker machines called **nodes** (could be VMs or physical), and a **control plane** that manages the nodes. Each node runs a kubelet (agent) and can host one or more Pods. The control plane components (API server, etcd, scheduler, controllers) can run on dedicated master nodes or co-located, depending on setup. This architecture lets Kubernetes abstract the resources of multiple machines as a single pool for your applications.
     
-- **Pods:** The basic unit of scheduling in K8s, as discussed. Usually one application container per Pod (plus maybe sidecars). All containers in a Pod share the same network IP and can communicate via `localhost`. They also share any volumes mounted. Pods are ephemeral – they can die and not be resurrected (except by controllers that create new ones). So never assume a specific Pod will always be there; instead use higher-level controllers and Services.
+- **Pods:** The basic unit of scheduling in K8s, as discussed. Usually one application container per Pod (plus maybe sidecars). ==All containers in a Pod share the same network IP and can communicate via `localhost`. They also share any volumes mounted==. Pods are ephemeral – they can die and not be resurrected (except by controllers that create new ones). So ==never assume a specific Pod will always be there; instead use higher-level controllers and Services.==
     
-- **Labels and Selectors:** Labels are key-value tags attached to objects (like pods, services, nodes, etc.). They are used to organize and select objects. For example, you might label pods with `app=frontend` or `env=staging`. **Label selectors** allow operations like a Service selecting pods (e.g., Service has selector app=frontend to pick up all frontend pods), or a Deployment managing pods with a certain label. They are fundamental for group management and querying. Best practice is to label things clearly (app name, component, environment, tier, etc.).
+- **Labels and Selectors:** ==Labels are key-value tags attached to objects ==(like pods, services, nodes, etc.). They are used to organize and select objects. For example, you might label pods with `app=frontend` or `env=staging`. ==**Label selectors** allow operations like a Service selecting pods (e.g., Service has selector app=frontend to pick up all frontend pods), or a Deployment managing pods with a certain label.== They are fundamental for group management and querying. Best practice is to label things clearly (app name, component, environment, tier, etc.).
     
 - **Controllers (Deployment, ReplicaSet, etc.):** Controllers are loops that drive the cluster towards desired state:
     
@@ -903,17 +903,17 @@ So etcd is a **consistent key-value database** that Kubernetes uses to store eve
         
     - **ConfigMap** and **Secret** are technically objects, not controllers, but they are used by pods for configuration as described.
         
-- **Service & Networking:** Kubernetes uses a flat network model where each Pod gets an IP address (usually from an overlay network or CNI plugin). However, Pods come and go, so you rarely use Pod IPs directly. Instead, you define a **Service** which gives a stable address (ClusterIP) and DNS name. The Service routes to the currently healthy pods (via label selector). There are also different Service types (ClusterIP, NodePort, LoadBalancer, ExternalName) as described. Under the hood, kube-proxy sets up iptables rules or IPVS to forward traffic from the Service IP to pod IPs. For Service discovery, Kubernetes automatically creates DNS entries (if CoreDNS is set up, which it is by default in most installs). So if you have a service “myapp” in namespace “demo”, any pod can resolve `myapp.demo.svc.cluster.local` to the Service’s cluster IP.
+- **Service & Networking:** Kubernetes uses a flat network model where each Pod gets an IP address (usually from an overlay network or CNI plugin). ==However, Pods come and go, so you rarely use Pod IPs directly. Instead, you define a **Service** which gives a stable address (ClusterIP) and DNS name.== The Service routes to the currently healthy pods (via label selector). There are also different Service types (ClusterIP, NodePort, LoadBalancer, ExternalName) as described. ==Under the hood, kube-proxy sets up iptables rules or IPVS to forward traffic from the Service IP to pod IPs==. For ==Service discovery, Kubernetes automatically creates DNS entries== (if CoreDNS is set up, which it is by default in most installs). So if you have a service “myapp” in namespace “demo”, any pod can resolve `myapp.demo.svc.cluster.local` to the Service’s cluster IP.
     
-- **Ingress:** While Services of type LoadBalancer can expose services, in many setups you use an **Ingress** resource with an **Ingress Controller** (like nginx ingress, Traefik, etc.) to manage external HTTP/HTTPS access. Ingress allows you to define rules for routing (hostnames, paths) to different services, and handle things like TLS termination. For example, you can expose multiple services under one IP with different URL paths or hostnames via an Ingress. Ingress is a higher-level concept for web traffic entry.
+- **Ingress:** ==While Services of type LoadBalancer can expose services, in many setups you use an **Ingress** resource with an **Ingress Controller** (like nginx ingress, Traefik, etc.) to manage external HTTP/HTTPS access==. ==Ingress allows you to define rules for routing (hostnames, paths) to different services, and handle things like TLS termination.== #veryImp For example, you can expose multiple services under one IP with different URL paths or hostnames via an Ingress. Ingress is a higher-level concept for web traffic entry.
     
 - **Volumes & Persistent Storage:** Kubernetes abstracts storage with **Volumes**. Unlike Docker, volumes in K8s can outlive the container (especially persistent volumes). There are many volume types (emptyDir, hostPath, configMap, secret, persistentVolumeClaim, etc). The pattern for persistent storage:
     
-    - Define a **PersistentVolume** (PV) which represents an actual storage (like a cloud disk, NFS share, etc.) – or rely on dynamic provisioning.
+    - Define a **PersistentVolume** (PV) ==which represents an actual storage== (like a cloud disk, NFS share, etc.) – or rely on dynamic provisioning.
         
-    - Define a **PersistentVolumeClaim** (PVC) which is a request for storage by a pod (ex: “I need 10Gi of storage, of type SSD”). If using a storage class and dynamic provisioning, a PV may be provisioned on the fly. The PVC will bind to a matching PV.
+    - Define a **PersistentVolumeClaim** (PVC) ==which is a request for storage by a pod (ex: “I need 10Gi of storage, of type SSD”). If using a storage class and dynamic provisioning, a PV may be provisioned on the fly. The PVC will bind to a matching PV==.
         
-    - In the Pod spec (or Deployment), include a volume that references the PVC. Now that volume is mounted in the container, providing durable storage. If the pod dies and is recreated, if it uses the same PVC, it gets the same data.
+    - ==In the Pod spec (or Deployment), include a volume that references the PVC. Now that volume is mounted in the container, providing durable storage. If the pod dies and is recreated, if it uses the same PVC, it gets the same data==. #imp
         
     - For StatefulSets, Kubernetes can manage one PVC per pod automatically (naming them with the pod). For Deployments (stateless), usually all replicas share a PVC is not possible (only one pod can bind to ReadWriteOnce volume in most cases), so for multiple writers you need either a RWX volume (like NFS) or handle state externally.
         
@@ -922,26 +922,26 @@ So etcd is a **consistent key-value database** that Kubernetes uses to store eve
     
 - **Namespaces:** (Recap) Useful for multi-tenancy or environment separation. For example, you might have “dev”, “staging”, “prod” namespaces to isolate those. Resource quotas and limits can be applied per namespace to avoid one team hogging all resources. Namespaces also scope names of resources and can scope access control.
     
-- **Resource Limits and Requests:** In each container spec, you can optionally specify resource requests and limits for CPU and memory.
+- **Resource Limits and Requests:** ==In each container spec, you can optionally specify resource requests and limits for CPU and memory==.
     
-    - **Request** is how much the pod is guaranteed (scheduler uses requests to decide which node can fit the pod).
+    - ==**Request** is how much the pod is guaranteed (scheduler uses requests to decide which node can fit the pod).==
         
-    - **Limit** is the maximum the container can use. If it tries to use more CPU than limit, it will be throttled; if it uses more memory than limit, it will be killed (OOMKilled).
+    - ==**Limit** is the maximum the container can use. If it tries to use more CPU than limit, it will be throttled; if it uses more memory than limit, it will be killed (OOMKilled)==. #veryImp 
         
     - It’s important to set these to help Kubernetes do proper bin packing and to ensure one noisy app doesn’t exhaust node memory and crash others. A one-year devops should know how to set basic requests/limits (e.g., in YAML).
         
-    - There are also QoS classes: Guaranteed (requests==limits for all containers), Burstable, BestEffort (no requests). Guaranteed pods are last to be evicted under pressure.
+    - There are also QoS classes: Guaranteed (requestslimits for all containers), Burstable, BestEffort (no requests). Guaranteed pods are last to be evicted under pressure.
         
-- **Taints and Tolerations:** Mechanism to control pod placement. A taint on a node means “I repel pods that don’t explicitly tolerate this”. For instance, master nodes often have a taint to prevent general pods from scheduling there (`node-role.kubernetes.io/master:NoSchedule`). If you did want a pod on master, it needs a toleration. This is advanced scheduling concept but sometimes used in devops tasks (like dedicate certain nodes to certain workloads).
+- **Taints and Tolerations:** Mechanism to control pod placement. ==A taint on a node means “I repel pods that don’t explicitly tolerate this”==. For instance, master nodes often have a taint to prevent general pods from scheduling there (`node-role.kubernetes.io/master:NoSchedule`). ==If you did want a pod on master, it needs a toleration==. This is advanced scheduling concept but sometimes used in devops tasks (like dedicate certain nodes to certain workloads).
     
-- **Affinity/Anti-affinity:** You can specify rules so pods either prefer or require to be (or not to be) on the same node or zone, etc., as other pods. For example, anti-affinity to spread replicas of an app across nodes for high availability. Or affinity to put certain workloads together for data locality.
+- **Affinity/Anti-affinity:** ==You can specify rules so pods either prefer or require to be (or not to be) on the same node or zone, etc., as other pods==. For example, anti-affinity to spread replicas of an app across nodes for high availability. Or affinity to put certain workloads together for data locality.
     
 
 **Real-World Use Cases:**
 
-- **Microservices Deployment:** Kubernetes is often used to host microservices architecture. Each microservice might be a Deployment with a set of replicas and a Service for discovery. They can independently scale. Kubernetes will ensure each microservice is healthy (via probes) and can communicate with others via services.
+- **Microservices Deployment:** ==Kubernetes is often used to host microservices architecture. Each microservice might be a Deployment with a set of replicas and a Service for discovery==. They can independently scale. ==Kubernetes will ensure each microservice is healthy (via probes) and can communicate with others via services==.
     
-- **High Availability Web Applications:** Use Deployment for stateless web frontends, possibly multiple replicas behind a Service. Use an Ingress or LoadBalancer to expose it to the internet. If a node goes down, those pods are recreated on other nodes. The Service and Ingress ensure continuous availability.
+- **High Availability Web Applications:** Use Deployment for stateless web frontends, possibly multiple replicas behind a Service. ==Use an Ingress or LoadBalancer to expose it to the internet. If a node goes down, those pods are recreated on other nodes.== The Service and Ingress ensure continuous availability.
     
 - **Big Data / Streaming:** Deploy Kafka or Cassandra with StatefulSets so each broker/node is stable. Use PersistentVolumes for storing data. K8s helps automate the recovery of nodes while preserving data.
     
@@ -954,17 +954,17 @@ So etcd is a **consistent key-value database** that Kubernetes uses to store eve
 
 **Kubernetes Best Practices:**
 
-- **Declarative Over Imperative:** Maintain your resource manifests (YAML files) in version control and apply them (possibly with GitOps). This way cluster state is reproducible and changes are tracked. Avoid making ad-hoc changes via kubectl edit in production (except emergency) - instead update the config and reapply.
+- **Declarative Over Imperative:** ==Maintain your resource manifests (YAML files) in version control and apply them (possibly with GitOps)==. This way cluster state is reproducible and changes are tracked.==Avoid making ad-hoc changes via kubectl edit in production (except emergency) - instead update the config and reapply==.
     
-- **Use Health Probes:** Always configure liveness and readiness probes for your pods if applicable. This ensures Kubernetes can manage your app’s lifecycle robustly (don’t route traffic to unready pods, auto-restart stuck pods).
+- **Use Health Probes:** Always configure liveness and readiness probes for your pods if applicable. This ==ensures Kubernetes can manage your app’s lifecycle robustly (don’t route traffic to unready pods, auto-restart stuck pods)==.
     
 - **Resource Requests/Limits:** Set reasonable requests and limits for CPU/memory for each container. This helps the scheduler and improves stability under load. Also consider cluster capacity - if you overcommit too much without limits, you risk instability.
     
-- **Use Namespace Separation:** Use namespaces to separate different environments or teams to avoid naming collisions and to apply policies (like RBAC or network policies) more easily. Also possibly use resource quotas in less trusted multi-tenant clusters to prevent one team from consuming all resources.
+- **Use Namespace Separation:** ==Use namespaces to separate different environments or teams to avoid naming collisions and to apply policies (like RBAC or network policies) more easily==. Also possibly use resource quotas in less trusted multi-tenant clusters to prevent one team from consuming all resources.
     
 - **Apply Security Practices:**
     
-    - Use RBAC to restrict who (and which service accounts) can do what. By default, in modern Kubernetes RBAC is on. Ensure you give least privilege needed (e.g., your app’s service account probably only needs to read certain configmaps, not list all secrets cluster-wide).
+    - ==Use RBAC to restrict who (and which service accounts) can do what==. By default, in modern Kubernetes RBAC is on. ==Ensure you give least privilege needed== (e.g., your app’s service account probably only needs to read certain configmaps, not list all secrets cluster-wide).
         
     - Consider using NetworkPolicies to restrict pod-to-pod communication as appropriate (by default, all pods can talk to all pods). For sensitive components like databases, you might only allow traffic from certain app pods.
         
@@ -972,7 +972,7 @@ So etcd is a **consistent key-value database** that Kubernetes uses to store eve
         
     - Don’t run unnecessary things in privileged mode. And in your pod specs, drop capabilities your container doesn’t need, run as non-root if possible (SecurityContext).
         
-- **Logging and Monitoring:** Implement centralized logging (e.g., EFK stack or a cloud logging service) and monitoring (Prometheus, etc.). Use liveness counts, etc., as signals. Kubernetes emits events and metrics (via metrics-server for basic CPU/memory, and via cAdvisor for more). Set up alerts for issues like CrashLoopBackOff or node not-ready, etc.
+- **Logging and Monitoring:** ==Implement centralized logging (e.g., EFK stack or a cloud logging service) and monitoring (Prometheus, etc.).== Use liveness counts, etc., as signals. Kubernetes emits events and metrics (via metrics-server for basic CPU/memory, and via cAdvisor for more). Set up alerts for issues like CrashLoopBackOff or node not-ready, etc.
     
 - **Readiness during Deployments:** Ensure your readiness probes truly reflect readiness, so that rolling updates don’t kill all old pods before new ones are ready. This prevents downtime.
     
@@ -980,11 +980,11 @@ So etcd is a **consistent key-value database** that Kubernetes uses to store eve
     
 - **Stateful workloads caution:** When running databases or any stateful app on Kubernetes, design with persistence and backup in mind. Use StatefulSets and PVCs. Understand that if the whole cluster goes down, you must have backups of etcd (for cluster state) and PV data (if not externally stored) to restore state. For critical data, some prefer managed database services outside the cluster, but many run stateful systems in K8s successfully.
     
-- **Autoscaling:** Use HPA for workloads that have variable demand to automatically scale pods. Just ensure you have metrics-server installed and your app exports metrics if using custom ones. Also ensure your cluster has enough nodes or set up cluster autoscaler so it can add nodes when pod demand exceeds current capacity.
+- **Autoscaling:** Use HPA for workloads that have variable demand to automatically scale pods. ==Just ensure you have metrics-server installed and your app exports metrics if using custom ones. Also ensure your cluster has enough nodes or set up cluster autoscaler so it can add nodes when pod demand exceeds current capacity==.
     
 - **Infrastructure as Code:** Treat cluster setup as code too (maybe using Terraform or CloudFormation for cloud resources, kubeadm or scripts for cluster config). This, along with declarative manifests for workloads, yields reproducibility.
     
-- **Testing changes:** Have a staging namespace or cluster to test new config or releases via the same manifests before applying to production. This catches errors in YAML or config issues with less impact.
+- **Testing changes:** ==Have a staging namespace or cluster to test new config or releases via the same manifests before applying to production.== This catches errors in YAML or config issues with less impact.
     
 - **Keep etcd safe:** If you manage the control plane, secure etcd (enable encryption at rest for secrets if possible, restrict network access to etcd). Regularly backup etcd data (there are tools or `etcdctl snapshot`).
     
@@ -1115,7 +1115,7 @@ Common things to troubleshoot in Kubernetes and how:
         
     - For troubleshooting, you might cordon (`kubectl cordon nodename`) to stop scheduling and drain pods (`kubectl drain nodename --ignore-daemonsets`) to move pods off, then investigate node.
         
-- **Application Performance issues:** Use `kubectl top pods` to see resource usage if something is throttling or OOMing. If CPU usage is at limit and being throttled, perhaps increase limit or replicas. If memory is climbing, watch for near limit (to avoid OOMKilled). If overall cluster CPU is maxed, consider adding nodes or using cluster autoscaler.
+- **Application Performance issues:** ==Use `kubectl top pods` to see resource usage if something is throttling or OOMing==. If CPU usage is at limit and being throttled, perhaps increase limit or replicas. If memory is climbing, watch for near limit (to avoid OOMKilled). ==If overall cluster CPU is maxed, consider adding nodes or using cluster autoscaler==.
     
 - **Troubleshoot RBAC Denials:** If a service account or user can’t do something (“Forbidden” message), describe the role/rolebinding or clusterrolebinding. Use `kubectl auth can-i ... --as=...` to simulate if a user can do an action. Adjust RBAC accordingly. Look at events; sometimes you see “Failed to list pods: (Forbidden)” in logs of a controller, meaning its service account lacks a permission.
     
